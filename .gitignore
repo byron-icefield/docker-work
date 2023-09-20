@@ -1,5 +1,5 @@
 **/redis/**
-**/mysql/**
+**/mysql/data/**
 **/mysql/log/**
 **/grafana/log/**
 **/grafana/data/**
