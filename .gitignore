@@ -1,0 +1,14 @@
+**/redis/**
+**/mysql/**
+**/mysql/log/**
+**/grafana/log/**
+**/grafana/data/**
+**/elasticsearch/single/**
+**/elasticsearch/cluster/01/**
+**/elasticsearch/cluster/02/**
+**/elasticsearch/cluster/03/**
+
+.idea
+._.DS_Store
+.DS_Store
+._**

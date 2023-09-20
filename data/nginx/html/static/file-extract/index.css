@@ -1,0 +1,19 @@
+.layui-fluid {
+    position: relative;
+    margin: 25px;
+    padding: 0 15px;
+}
+
+.extract-word {
+    font-weight: 400;
+    font-size: 12px;
+    color: #58647d;
+    line-height: 20px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 8px;
+    margin-bottom: 10px;
+    background: #f0f2f5;
+    display: inline-flex;
+    align-items: center;
+}

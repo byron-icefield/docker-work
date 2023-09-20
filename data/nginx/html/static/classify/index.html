@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>分类分级模拟页面</title>
+    <link rel="shortcut icon" href="https://www.dsphere.com.cn/favicon.ico">
+    <link rel="stylesheet" href="../lib/layui/css/layui.css" />
+</head>
+<style>
+    body {
+        margin-top: 30px;
+        margin-left: 100px;
+    }
+
+    p {
+        height: 100px;
+        margin-right: 100px;
+        border: solid rgb(229, 224, 224) 1px;
+    }
+</style>
+
+<body>
+    <h1>Hello</h1><br />
+
+    <h3>请改变路径后 /static/classify/ 后的内容来改变页面内容</h3><br />
+
+    <h3>#后内容不一样视作不同的页面 (#放在最后面) </h3><br />
+
+    <p id="show1">loading</p>
+    <p id="show2">loading</p>
+
+</body>
+
+<script src="../lib/jquery.min.js"></script>
+<script>
+    // $(function () {
+
+    function revendor() {
+        var hash = window.location.hash;
+        document.title = "分类分级模拟页面" + hash;
+        $("#show1").html(`锚点为: ${hash}`);
+        var search = decodeURIComponent(window.location.search);
+        $("#show2").html(`搜索参数为: ${search}`);
+
+    }
+
+    window.onpopstate = function (event) {
+        console.log("监听到锚点变更事件");
+        revendor();
+    };
+
+    revendor();
+
+    // });
+</script>
+
+</html>
