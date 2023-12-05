@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
-    <title>分类分级content页面</title>
+    <title>分类分级网页内容采集测试页面</title>
     <link rel="shortcut icon" href="https://www.dsphere.com.cn/favicon.ico">
     <link rel="stylesheet" href="../lib/layui/css/layui.css" />
 </head>
@@ -23,19 +23,119 @@
 </style>
 
 <body>
-    <h1>Hello</h1><br />
-
-    <span id="show"></span>
-
-    <textarea id="textarea">textarea</textarea>
-
+    <h1>分类分级网页内容采集测试页面</h1><br />
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+        <legend>修改content内容请修改content.json</legend>
+    </fieldset>
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this">标签1</li>
+            <li>标签2</li>
+            <li>标签3</li>
+            <li>标签4</li>
+            <li>标签5</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div id="content1" class="layui-tab-item layui-show">
+                内容1
+            </div>
+            <div id="content2" class="layui-tab-item">内容2</div>
+            <div id="content3" class="layui-tab-item">内容3</div>
+            <div id="content4" class="layui-tab-item">内容4</div>
+            <div id="content5" class="layui-tab-item">内容5</div>
+        </div>
+    </div>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+        <legend>修改弹窗内容请修改message.json</legend>
+    </fieldset>
+    <div class="layui-btn-container">
+        <button data-method="offset" data-type="t" class="layui-btn layui-btn-normal">点击弹窗</button>
+    </div>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+        <legend>修改iframe内容请修改 iframe.json</legend>
+    </fieldset>
+    <iframe src="./iframe.html" height="500" width="800" title="Iframe Example"></iframe>
 </body>
 <script src="../lib/jquery.min.js"></script>
+<script src="../lib/layui/layui.js"></script>
 <script>
-    setInterval("changeText()", 5000);
-    function changeText(){
-　　    $('#show').html($('#textarea').val() + "\n" + Date());
+    setInterval("changeText()", 1000);
+    function changeText() {
+        $.ajax({
+            type: "get",
+            url: '/static/classify/content.json?number=' + Math.random(),
+            success: function (data) {
+                if (data.content1 != document.getElementById("content1").innerText) {
+                    $("#content1").html(data.content1)
+                } else {
+                    console.log("content1 no change")
+                }
+                if (data.content2 != document.getElementById("content2").innerText) {
+                    $("#content2").html(data.content2)
+                } else {
+                    console.log("content2 no change")
+                }
+                if (data.content3 != document.getElementById("content3").innerText) {
+                    $("#content3").html(data.content3)
+                } else {
+                    console.log("content3 no change")
+                }
+                if (data.content4 != document.getElementById("content4").innerText) {
+                    $("#content4").html(data.content4)
+                } else {
+                    console.log("content4 no change")
+                }
+                if (data.content5 != document.getElementById("content5").innerText) {
+                    $("#content5").html(data.content5)
+                } else {
+                    console.log("content5 no change")
+                }
+            },
+            error: function (e) {
+                layer.msg('查询出错了');
+            }
+        });
     }
+
+    layui.use('layer', function () { //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+
+        //触发事件
+        var active = {
+            offset: function (othis, message) {
+                var type = othis.data('type')
+
+                layer.open({
+                    type: 1
+                    , offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                    , id: 'layerDemo' + type //防止重复弹出
+                    , content: '<div style="padding: 20px 100px;">' + message + '</div>'
+                    , btn: '关闭'
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0 //不显示遮罩
+                    , yes: function () {
+                        layer.closeAll();
+                    }
+                });
+            }
+        };
+
+        $('.layui-btn').on('click', function () {
+            var othis = $(this), method = othis.data('method');
+            $.ajax({
+                type: "get",
+                url: '/static/classify/message.json?number=' + Math.random(),
+                success: function (data) {
+                    active[method] ? active[method].call(this, othis, data.message) : '';
+                },
+                error: function (e) {
+                    layer.msg('查询出错了');
+                }
+            });
+
+        });
+    });
+
 </script>
 
 </html>

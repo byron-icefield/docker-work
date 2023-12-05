@@ -98,6 +98,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "18888:18888"
 
   # clickhouse:
   #   image: bitnami/clickhouse:23.7.4-debian-11-r2

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>excel内容展示页面</title>
+    <link rel="shortcut icon" href="https://www.dsphere.com.cn/favicon.ico">
+    <link rel="stylesheet" href="/static/lib/layui/css/layui.css" />
+</head>
+<style>
+    body {
+        margin-top: 30px;
+        margin-left: 100px;
+    }
+
+    .cell-word {
+        font-weight: 400;
+        font-size: 12px;
+        color: #58647d;
+        line-height: 20px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-right: 8px;
+        margin-bottom: 10px;
+        background: #f0f2f5;
+        display: inline-flex;
+        align-items: center;
+    }
+</style>
+
+<body>
+    <h1>excel内容展示页面</h1><br />
+
+    <div class="layui-btn-container">
+        <button class="layui-btn" id="file-select">
+            下拉选择文件
+        </button>
+        <button type="button" class="layui-btn" id="refresh">刷新</button>
+    </div>
+
+    <div class="layui-fluid">
+        <div id="tab-view">
+        </div>
+    </div>
+</body>
+
+<script id="tab-tpl" type="text/html">
+
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <!-- <li class="layui-this">标签1</li> -->
+            {{#  layui.each(d, function(index, item){ }}
+                {{# if(index == 0){ }}
+                    <li class="layui-this">{{item.name}}</li>
+                {{# } else { }}
+                    <li>{{item.name}}</li>
+                {{# } }}
+            {{#  }); }}
+            {{#  if(d.length === 0){ }}
+                <li>无匹配数据</li>
+            {{#  } }} 
+        </ul>
+        <div class="layui-tab-content">
+            {{#  layui.each(d, function(index, item){ }}
+                <div class="layui-tab-item layui-show">
+                    {{#  layui.each(item.data, function(index, row){ }}
+                        {{#  layui.each(row, function(index, cell){ }}
+                            <span class="cell-word">{{cell}}</span>
+                        {{#  }); }}
+                        <br/>
+                    {{#  }); }}
+                </div>
+            {{#  }); }}
+            {{#  if(d.length === 0){ }}
+                <div class="layui-tab-item layui-show">
+                    <span>无匹配数据</span>
+                </div>
+            {{#  } }} 
+        </div>
+    </div>
+
+
+</script>
+
+<script src="/static/lib/jquery.min.js"></script>
+<script src="/static/lib/layui/layui.js"></script>
+<script>
+    layui.use(['dropdown', 'element', 'layer', 'laytpl'], function () {
+        var $ = layui.jquery
+            , upload = layui.upload
+            , dropdown = layui.dropdown
+            , element = layui.element
+            , laytpl = layui.laytpl
+            , layer = layui.layer;
+
+        var selectedFileName = null
+
+        function loadContent(fileName) {
+            $.ajax({
+                type: "get",
+                url: '/api/file',
+                data: { "fileName": fileName },
+                success: function (data) {
+                    if (!data.success) {
+                        layer.msg(data.msg);
+                        return
+                    }
+                    laytpl($('#tab-tpl').html()).render(data.data, function (html) {
+                        $("#tab-view").html(html);
+                        // 渲染一下
+                        element.render();
+                    });
+                },
+                error: function (e) {
+                    layer.msg('查询出错了');
+                }
+            });
+        }
+
+        function loadFileList() {
+
+            $.ajax({
+                type: "get",
+                url: '/api/file/list',
+                success: function (data) {
+
+                    if (!data.success) {
+                        layer.msg(data.msg);
+                        return
+                    }
+                    var list = data.data.map(function (name) {
+                        return { "title": name, "id": name }
+                    })
+
+                    dropdown.render({
+                        elem: '#file-select'
+                        , data: list
+                        , click: function (obj) {
+                            selectedFileName = obj.title
+                            document.getElementById('file-select').innerText = selectedFileName
+                            element.render();
+                            loadContent(selectedFileName)
+                            // layer.tips('点击了：' + obj.title, this.elem, { tips: [1, '#5FB878'] })
+                        }
+                    });
+                },
+                error: function (e) {
+                    layer.msg('查询出错了');
+                }
+            });
+        }
+
+        loadFileList();
+
+
+        $('#refresh').on("click", function () {
+            if (selectedFileName != null) {
+                loadContent(selectedFileName)
+            }
+        }
+        )
+
+    });
+
+
+</script>
+
+</html>
