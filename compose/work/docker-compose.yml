@@ -100,6 +100,18 @@ services:
       - "443:443"
       - "18888:18888"
 
+  file-extract:
+    image: ldq/file-extract:v20231231_1
+    container_name: file-extract
+    restart: unless-stopped
+    networks:
+      - traefik
+    environment:
+      TZ : 'Asia/Shanghai'
+    volumes:
+      - /data/webpage_data/excel:/data/webpage_data/excel:ro
+    ports:
+      - "8080:8080"
   # clickhouse:
   #   image: bitnami/clickhouse:23.7.4-debian-11-r2
   #   restart: unless-stopped
